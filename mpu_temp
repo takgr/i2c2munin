@@ -1,0 +1,21 @@
+#!/bin/sh
+#%# family=auto
+#%# capabilities=autoconf
+case $1 in
+   config)
+        cat <<'EOM'
+graph_category boat
+graph_title Internal case temperature
+graph_vlabel degrees C
+graph_info Temperature in C inside the box
+temperature.info Case temperature
+temperature.label Temperature
+temperature.critical 50
+temperature.warning 40
+
+EOM
+        exit 0;;
+esac
+
+echo "temperature.value" `python /root/imu.py| grep temp|awk -F: '{print $2}'`
+

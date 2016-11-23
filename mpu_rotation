@@ -1,0 +1,26 @@
+#!/bin/sh
+#%# family=auto
+#%# capabilities=autoconf
+case $1 in
+   config)
+        cat <<'EOM'
+graph_category boat
+graph_title XY rotation
+graph_vlabel degrees
+graph_info XY rotation in degrees
+Xrotation.info X axis rotation
+Xrotation.label X
+Xrotation.critical 30
+Xrotation.warning 20
+Yrotation.info Y axis rotation
+Yrotation.label Y
+Yrotation.critical 30
+Yrotation.warning 20
+
+EOM
+        exit 0;;
+esac
+
+echo "Xrotation.value" `python /root/imu.py| grep "x rot"|awk -F: '{print $2}'`
+echo "Yrotation.value" `python /root/imu.py| grep "y rot"|awk -F: '{print $2}'`
+

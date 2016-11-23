@@ -1,0 +1,22 @@
+#!/bin/sh
+#%# family=auto
+#%# capabilities=autoconf
+param=$(basename $0 | sed 's/^weather_//g' | tr '_' '.')
+case $1 in
+   config)
+        cat <<'EOM'
+graph_category weather
+graph_title Humidity
+graph_vlabel %
+graph_info External Humidity
+humidity.info Humidity
+humidity.label Humidity 
+humidity.critical 80
+humidity.warning 65
+
+EOM
+        exit 0;;
+esac
+
+echo "humidity.value" `/home/odroid/weather | grep humi|awk -F: '{print $2}'`
+

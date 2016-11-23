@@ -1,0 +1,23 @@
+#!/bin/sh
+#%# family=auto
+#%# capabilities=autoconf
+param=$(basename $0 | sed 's/^weather_//g' | tr '_' '.')
+case $1 in
+   config)
+        cat <<'EOM'
+
+graph_category weather
+graph_title Barometric Pressure
+graph_args --base 1000 -l 980 -u 1050 -r --units-exponent 1
+graph_scale no
+graph_vlabel hPa
+graph_info Barometric Pressure
+pressure.info Barometric Pressure in hPa
+pressure.label mbar
+
+EOM
+        exit 0;;
+esac
+
+echo "pressure.value" `/home/odroid/weather | grep pres|awk -F: '{print $2}'`
+

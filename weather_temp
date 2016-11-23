@@ -1,0 +1,22 @@
+#!/bin/sh
+#%# family=auto
+#%# capabilities=autoconf
+param=$(basename $0 | sed 's/^weather_//g' | tr '_' '.')
+case $1 in
+   config)
+        cat <<'EOM'
+graph_category weather
+graph_title Living Room temperature
+graph_vlabel degrees C
+graph_info Temperature in C at the living room
+temperature.info Room temperature
+temperature.label Temperature
+temperature.critical 40
+temperature.warning 30
+
+EOM
+        exit 0;;
+esac
+
+echo "temperature.value" `/home/odroid/weather | grep temp|awk -F: '{print $2}'`
+
