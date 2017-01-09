@@ -1,0 +1,78 @@
+#!/usr/bin/perl
+
+use strict;
+
+use warnings;
+
+use Net::GPSD3;
+
+use Data::Dumper qw{Dumper};
+#use lib $ENV{'MUNIN_LIBDIR'};
+use Munin::Plugin;
+
+$|=1;
+
+
+
+
+my $mode = ($ARGV[0] or "print");
+
+=head1 NAME
+
+
+
+gps.sat.pl - Net::GPSD3 Watcher with Custom Handler
+
+
+
+=cut
+
+if ($mode eq 'autoconf' ) {
+    if (`/usr/bin/perl $0` eq '' ) {
+        print "no (no devices to monitor)\n";
+    } else {
+        print "yes\n";
+    }
+    exit 0;
+}
+
+if ($mode eq 'config' ) {
+    # The headers
+    print "graph_title GPS Satellites\n";
+    print "graph_args -l 0\n";
+    print "graph_vlabel Number of Sats\n";
+    print "graph_scale no\n";
+    print "graph_category GPS\n";
+    print "satinview.label Satellites in SKY View\n";
+    print "satinview.info Satellites in View\n";
+    print "satinview.draw AREA\n";
+    print "satused.label Satellites used\n";
+    print "satused.info Satellites used in Navigation\n";
+    print "satused.draw AREA\n";
+    exit 0;
+}
+
+
+
+
+my $gpsd=Net::GPSD3->new; #default host port is undef
+
+$gpsd->addHandler(\&sky);
+
+$gpsd->watch;
+
+	sub sky {
+
+	  my $sky=shift;
+
+	  return unless $sky->class eq "SKY";
+
+	  my $satinview=$sky->reported;
+	  my $satused=$sky->used;
+       	  print "satinview.value ", $satinview, "\n";
+       	  print "satused.value ", $satused, "\n";
+	  exit 0;
+
+	}
+
+
